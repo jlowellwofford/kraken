@@ -1,0 +1,16 @@
+kr_img_base: /home/vagrant/support/base
+kr_img_modules_dir: "{{ kr_img_base }}/modules"
+kr_img_modules: [
+    e1000,
+    sunrpc,
+    grace,
+    lockd,
+    nfs_acl,
+    auth_rpcgss,
+    nfsd,
+    fscache,
+    nfs,
+    dns_resolver,
+    nfsv4,
+    overlay
+]

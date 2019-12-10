@@ -1,0 +1,52 @@
+---
+- name: Create image base modules directory
+  file:
+    path: "{{ kr_img_modules_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Find modules in module path
+  find:
+    paths: "{{ mod_dir }}"
+    patterns: "{{ kr_img_modules | map('regex_replace', '$', '.ko.xz') | list }}"
+    recurse: yes
+  register: kr_img_modules_paths
+
+#- name: Copy modules to base modules directory
+#  copy:
+#    src: "{{ item.path }}"
+#    dest: "{{ kr_img_modules_dir }}"
+#    remote_src: yes
+#  with_items: "{{ kr_img_modules_paths.files }}"
+
+- name: Copy and extract xz compressed modules
+  shell: xz -dc "{{ item.path }}" > "{{ item.path | basename | regex_replace('.xz$', '') }}"
+  args:
+    chdir: "{{ kr_img_modules_dir }}"
+    creates: "{{ item.path | basename | regex_replace('.xz$', '') }}"
+  with_items: "{{ kr_img_modules_paths.files }}"
+
+- name: Create modules.txt file
+  template:
+    src: modules.txt.j2
+    dest: "{{ kr_img_base }}/modules.txt"
+    mode: '0644'
+
+- name: Create image SSH keys
+  shell: ssh-keygen -N "" -f id_rsa
+  args:
+    chdir: "{{ kr_img_base }}"
+    creates: id_rsa
+
+- name: Create authorized_keys
+  copy:
+    src: "{{ kr_img_base }}/id_rsa.pub"
+    dest: "{{ kr_img_base }}/authorized_keys"
+    remote_src: yes
+    mode: 0600
+
+- name: Create boot image
+  shell: "sh {{ kr_src_dir }}/utils/layer0/buildlayer0.sh -o initramfs.cpio.gz -b {{ kr_img_base }} -k {{ kr_src_dir }} amd64"
+  args:
+    chdir: "{{ kr_tftp_dir }}"
+    creates: initramfs.cpio.gz

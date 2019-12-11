@@ -40,29 +40,29 @@ RUN set -e \
   && rm -rf /var/cache/yum
 
 # Install both Slurm and Charliecloud
-RUN set -e \
-  && yum install -y $SLURM_BUILD_PACKAGES \
-  && mkdir -p /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS} \
-  && cd /root/rpmbuild/SOURCES/ \
-  && wget "$SLURM_DOWNLOAD_URL" \
-  && echo "$SLURM_DOWNLOAD_MD5" "slurm-$SLURM_VERSION".tar.bz2 | md5sum -c - \
-  && rpmbuild -tb "slurm-$SLURM_VERSION".tar.bz2 \
-  && cd /root/rpmbuild/RPMS/x86_64 \
-  && yum -y install $SLURMD_PACKAGES \
-  && cd \
-  && rm -rf /root/rpmbuild \
-  && useradd -r -U --uid=101 slurm \
-  && cd /usr/local/src \
-  && git clone --recursive https://github.com/hpc/charliecloud.git \
-  && cd charliecloud \
-  && make \
-  && make install PREFIX=/usr/local \
-  && ch-run --version \
-  #   && printf "export CH_TEST_TARDIR=/var/tmp/tarballs\nexport CH_TEST_IMGDIR=/var/tmp/images\nexport CH_TEST_PERMDIRS=skip\n" > /etc/profile.d/charliecloud.sh \
-  && echo "clean_requirements_on_remove=1" >> /etc/yum.conf \
-  && yum -y autoremove $SLURM_BUILD_PACKAGES epel-release \
-  && yum clean all \
-  && rm -rf /var/cache/yum /usr/local/src/charliecloud
+#RUN set -e \
+#  && yum install -y $SLURM_BUILD_PACKAGES \
+#  && mkdir -p /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS} \
+#  && cd /root/rpmbuild/SOURCES/ \
+#  && wget "$SLURM_DOWNLOAD_URL" \
+#  && echo "$SLURM_DOWNLOAD_MD5" "slurm-$SLURM_VERSION".tar.bz2 | md5sum -c - \
+#  && rpmbuild -tb "slurm-$SLURM_VERSION".tar.bz2 \
+#  && cd /root/rpmbuild/RPMS/x86_64 \
+#  && yum -y install $SLURMD_PACKAGES \
+#  && cd \
+#  && rm -rf /root/rpmbuild \
+#  && useradd -r -U --uid=101 slurm \
+#  && cd /usr/local/src \
+#  && git clone --recursive https://github.com/hpc/charliecloud.git \
+#  && cd charliecloud \
+#  && make \
+#  && make install PREFIX=/usr/local \
+#  && ch-run --version \
+#  #   && printf "export CH_TEST_TARDIR=/var/tmp/tarballs\nexport CH_TEST_IMGDIR=/var/tmp/images\nexport CH_TEST_PERMDIRS=skip\n" > /etc/profile.d/charliecloud.sh \
+#  && echo "clean_requirements_on_remove=1" >> /etc/yum.conf \
+#  && yum -y autoremove $SLURM_BUILD_PACKAGES epel-release \
+#  && yum clean all \
+#  && rm -rf /var/cache/yum /usr/local/src/charliecloud
 
 COPY container-files /
 

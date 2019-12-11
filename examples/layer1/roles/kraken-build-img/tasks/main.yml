@@ -12,13 +12,6 @@
     recurse: yes
   register: kr_img_modules_paths
 
-#- name: Copy modules to base modules directory
-#  copy:
-#    src: "{{ item.path }}"
-#    dest: "{{ kr_img_modules_dir }}"
-#    remote_src: yes
-#  with_items: "{{ kr_img_modules_paths.files }}"
-
 - name: Copy and extract xz compressed modules
   shell: xz -dc "{{ item.path }}" > "{{ item.path | basename | regex_replace('.xz$', '') }}"
   args:

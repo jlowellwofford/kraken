@@ -4,3 +4,4 @@ dependencies:
 - role: kraken-build
 - role: kraken-tftpboot
 - role: kraken-build-img
+- role: kraken-build-layer1

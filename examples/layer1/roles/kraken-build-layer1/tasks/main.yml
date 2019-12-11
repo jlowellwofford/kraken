@@ -1,0 +1,61 @@
+---
+- name: Install buildah, nfs
+  become: yes
+  package:
+    name: 
+      - buildah
+      - nfs-utils
+    state: present
+
+- name: Enable and start nfs-server
+  become: yes
+  service:
+    name: nfs-server
+    enabled: yes
+    state: started
+
+- name: Create NFS export directory
+  become: yes
+  file:
+    path: "{{ kr_l1_export.dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create NFS export for l1 image
+  become: yes
+  template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Export NFS mountpoints
+
+- name: Pull base container
+  become: yes
+  shell: buildah pull "{{ kr_l1_base_container }}"
+  
+- name: Build layer1 image
+  become: yes
+  shell: buildah bud -t layer1 .
+  args:
+    chdir: "{{ kr_l1_docker_dir }}"
+
+- name: Create container from layer1 image
+  become: yes
+  shell: buildah from -t layer1 layer1
+
+- name: Mount container
+  become: yes
+  shell: buildah mount layer1
+  register: kr_l1_img_mnt
+
+- name: Symblink container mount to layer1 export
+  become: yes
+  file:
+    src: "{{ kr_l1_img_mnt.stdout_lines }}"
+    dest: "{{ kr_l1_export.dir }}/rootfs"
+    state: link

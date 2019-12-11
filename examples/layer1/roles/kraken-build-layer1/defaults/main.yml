@@ -1,0 +1,8 @@
+---
+
+kr_l1_docker_dir: "{{ kr_src_dir }}/utils/layer1/centos-supervisord"
+kr_l1_base_container: "docker.io/library/centos:7"
+kr_l1_export:
+  dir: /layer1
+  hosts: "*"
+  options: "(ro,no_root_squash,async)"

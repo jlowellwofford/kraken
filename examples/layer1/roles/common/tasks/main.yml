@@ -17,3 +17,9 @@
   package:
     name: epel-release
     state: present
+
+- name: Install OpenHPC release
+  become: yes
+  package:
+    name: "{{ ohpc_repo_rpm }}"
+    state: present

@@ -711,7 +711,13 @@ func (sme *StateMutationEngine) buildGraphStage1(root *mutationNode, edge *mutat
 	for sp, n := range seenNodes {
 		if sp.Equal(root.spec) {
 			// yes, we've seen this node, so we're done processing this chain.  Merge the nodes.
-			sme.remapToNode(root, n, true)
+			rmEdge := sme.remapToNode(root, n, true)
+			if len(rmEdge) > 0 {
+				// this means that our node is a dupe *and* our edge is a dupe
+				// the only sensible thing to do at this point is leave a dangling duplicate chain
+				// and let a later stage clean things up
+				nodes = append(nodes, root)
+			}
 			return nodes, edges
 		}
 	}
@@ -977,9 +983,10 @@ func (sme *StateMutationEngine) graphIsSane(nodes []*mutationNode, edges []*muta
 	}
 	// 2. nodeEdges should have ref count 2
 	bad := 0
-	for _, c := range nodeEdges {
+	for m, c := range nodeEdges {
 		if c != 2 {
 			bad++
+			fmt.Printf("Bad ref count: edge %p has refcount %d\n", m, c)
 		}
 	}
 	if bad > 0 {

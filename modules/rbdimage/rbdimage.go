@@ -23,8 +23,8 @@ import (
 	"github.com/hpc/kraken/core"
 	"github.com/hpc/kraken/lib"
 
-	imgpb "github.com/hpc/kraken/Extensions/ImageState/proto"
 	cpb "github.com/hpc/kraken/core/proto"
+	imgpb "github.com/hpc/kraken/extensions/ImageState/proto"
 	pb "github.com/hpc/kraken/modules/rbdimage/proto"
 )
 

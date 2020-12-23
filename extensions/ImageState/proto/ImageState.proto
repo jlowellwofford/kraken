@@ -1,0 +1,26 @@
+/* ImageState.proto: generic data for tracking node images states
+ *
+ * Author: J. Lowell Wofford <lowell@lanl.gov>
+ *
+ * This software is open source software available under the BSD-3 license.
+ * Copyright (c) 2020, Triad National Security, LLC
+ * See LICENSE file for details.
+ */
+
+syntax = "proto3";
+package proto;
+
+message ImageState {
+    enum State {
+        UNKNOWN  = 0;  // current image state is unknown
+        INACTIVE = 1;  // the image is not currently loaded, no action has been taken
+        LOADING  = 2;  // in the process of attaching/loading image
+        ACTIVE   = 3;  // on the correct image and active
+        UPDATE   = 4;  // image needs to be changed
+        ERROR    = 5;  // unrecoverable error
+    }
+    State state       = 1; // current state of the image
+    bool busy         = 2; // is the image busy?
+    string image_name = 3; // unique identifier for image
+    string error      = 4; // last image error message
+}

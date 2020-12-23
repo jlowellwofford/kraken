@@ -12,7 +12,7 @@ package proto;
 
 message ImageState {
     enum State {
-        UNKNOWN  = 0;  // current image state is unknown
+        NONE     = 0;  // current image state is unknown
         INACTIVE = 1;  // the image is not currently loaded, no action has been taken
         LOADING  = 2;  // in the process of attaching/loading image
         ACTIVE   = 3;  // on the correct image and active
@@ -20,7 +20,12 @@ message ImageState {
         ERROR    = 5;  // unrecoverable error
     }
     State state       = 1; // current state of the image
-    bool busy         = 2; // is the image busy?
+    enum Busy {
+        UNKNOWN = 0;
+        IDLE    = 1;
+        BUSY    = 2;
+    }
+    Busy busy         = 2; // is the image busy?
     string image_name = 3; // unique identifier for image
     string error      = 4; // last image error message
 }

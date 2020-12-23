@@ -1,0 +1,18 @@
+/* cpuburn.proto: describes the RBDImageConfig object
+ *
+ * Author: J. Lowell Wofford <lowell@lanl.gov>
+ *
+ * This software is open source software available under the BSD-3 license.
+ * Copyright (c) 2020, Triad National Security, LLC
+ * See LICENSE file for details.
+ */
+
+ syntax = "proto3";
+ package proto;
+
+ message RBDImageConfig {
+     string namespace = 1;
+     string id = 2;
+     string secret = 3;
+     repeated bytes monitors = 4;
+ }

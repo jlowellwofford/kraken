@@ -206,10 +206,11 @@ func init() {
 			},
 		},
 		map[string]reflect.Value{
-			"/RunState":   reflect.ValueOf(cpb.Node_SYNC),
-			imageStateURL: reflect.ValueOf(imgpb.ImageState_ACTIVE),
+			"/RunState": reflect.ValueOf(cpb.Node_SYNC),
 		},
-		map[string]reflect.Value{},
+		map[string]reflect.Value{
+			imageStateURL: reflect.ValueOf(imgpb.ImageState_NONE),
+		},
 		lib.StateMutationContext_SELF,
 		time.Second*5,
 		[3]string{si.ID(), imageStateURL, imgpb.ImageState_ERROR.String()},
